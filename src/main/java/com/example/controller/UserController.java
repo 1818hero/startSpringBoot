@@ -18,7 +18,7 @@ public class UserController {
 	private UserRepository userRepository;
 	
 	@Modifying
-	@RequestMapping("add")
+	@RequestMapping("/user/add")
 	@ResponseBody 
 	public String addUser(@RequestBody User user){
 		userRepository.save(user);
@@ -26,7 +26,7 @@ public class UserController {
 	}
 	
 	@Modifying
-	@RequestMapping("delete")
+	@RequestMapping("/user/delete")
 	@ResponseBody 
 	public String deleteUser(@RequestParam Long id){
 		userRepository.delete(id);
@@ -34,7 +34,7 @@ public class UserController {
 	}
 	
 	@Modifying
-	@RequestMapping("update")
+	@RequestMapping("/user/update")
 	@ResponseBody 
 	public String updateUser(@RequestBody User user){
 		User userget = userRepository.findUserById(user.getId());
@@ -46,7 +46,7 @@ public class UserController {
 		else return "User not found!";
 	}
 	
-	@RequestMapping("get")
+	@RequestMapping("/user/get")
 	@ResponseBody 
 	public String findUser(@RequestParam Long id){
 		User userget = userRepository.findUserById(id);

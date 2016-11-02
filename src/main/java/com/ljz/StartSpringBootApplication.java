@@ -1,15 +1,18 @@
-package com.example;
+package com.ljz;
 
 import java.util.*;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 import com.ljz.filter.HTTPBasicAuthorizeAttribute;
+import com.ljz.jwt.Audience;
 
 @SpringBootApplication
+@EnableConfigurationProperties(Audience.class)  
 public class StartSpringBootApplication {
 
 	public static void main(String[] args) {

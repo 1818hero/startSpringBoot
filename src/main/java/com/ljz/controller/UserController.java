@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.ljz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.repository.*;
-import com.example.pojo.*;
+import com.ljz.pojo.*;
+import com.ljz.repository.*;
 @Controller
 @EnableAutoConfiguration
 public class UserController {
@@ -40,7 +40,6 @@ public class UserController {
 		User userget = userRepository.findUserById(user.getId());
 		if(userget!=null){
 			userget.setName(user.getName());
-			userget.setAge(user.getAge());
 			return "Update successfully!";
 		}
 		else return "User not found!";

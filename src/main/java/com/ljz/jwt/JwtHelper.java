@@ -1,4 +1,10 @@
 package com.ljz.jwt;
+
+/*
+ * JWT的生成和解析
+ */
+
+
 import java.security.Key;  
 import java.util.Date;  
   

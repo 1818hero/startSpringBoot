@@ -1,9 +1,9 @@
 package com.ljz.jwt;
 
 public class LoginPara {
-	private String clientId;
-	private String username;
-	private String password;
+	private String clientId;	//在Audience中的属性
+	private String userName;	//数据库的username
+	private String password;	//数据库中的password
 	private String captchaCode;
 	private String captchaValue;
 	public String getClientId() {
@@ -13,10 +13,10 @@ public class LoginPara {
 		this.clientId = clientId;
 	}
 	public String getUsername() {
-		return username;
+		return userName;
 	}
 	public void setUsername(String username) {
-		this.username = username;
+		this.userName = username;
 	}
 	public String getPassword() {
 		return password;

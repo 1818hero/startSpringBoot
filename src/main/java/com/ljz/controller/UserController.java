@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ljz.pojo.*;
 import com.ljz.repository.*;
+import com.ljz.util.MyUtils;
 @Controller
 @EnableAutoConfiguration
 public class UserController {
@@ -21,6 +22,9 @@ public class UserController {
 	@RequestMapping("/user/add")
 	@ResponseBody 
 	public String addUser(@RequestBody User user){
+		String salt = Double.toString(Math.random()*10000);
+		user.setSalt(salt);
+		user.setPassword(MyUtils.getMD5(user.getPassword()+salt));
 		userRepository.save(user);
 		return "Add successfully!";
 	}

@@ -9,6 +9,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 import com.ljz.filter.HTTPBasicAuthorizeAttribute;
+import com.ljz.filter.HTTPBearerAuthorizeAttribute;
 import com.ljz.jwt.Audience;
 
 @SpringBootApplication
@@ -24,8 +25,18 @@ public class StartSpringBootApplication {
         HTTPBasicAuthorizeAttribute httpBasicFilter = new HTTPBasicAuthorizeAttribute();  
         registrationBean.setFilter(httpBasicFilter);  
         List<String> urlPatterns = new ArrayList<String>();  
-        urlPatterns.add("/user/*");  
+        urlPatterns.add("/user/getaaa");  
         registrationBean.setUrlPatterns(urlPatterns);  
         return registrationBean;  
     }
+    @Bean  
+    public FilterRegistrationBean jwtFilterRegistrationBean(){  
+        FilterRegistrationBean registrationBean = new FilterRegistrationBean();  
+        HTTPBearerAuthorizeAttribute httpBearerFilter = new HTTPBearerAuthorizeAttribute();  
+        registrationBean.setFilter(httpBearerFilter);  
+        List<String> urlPatterns = new ArrayList<String>();  
+        urlPatterns.add("/user/get");  
+        registrationBean.setUrlPatterns(urlPatterns);  
+        return registrationBean;  
+    }  
 }

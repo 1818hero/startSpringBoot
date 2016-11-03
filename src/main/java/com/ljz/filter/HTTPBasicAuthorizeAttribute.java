@@ -10,8 +10,12 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;  
 import javax.servlet.ServletResponse;  
 import javax.servlet.http.HttpServletRequest;  
-import javax.servlet.http.HttpServletResponse;  
-  
+import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ljz.util.ResultMsg;
+import com.ljz.util.ResultStatusCode;
+
 import sun.misc.BASE64Decoder;  
   
 public class HTTPBasicAuthorizeAttribute implements Filter{  
@@ -28,14 +32,16 @@ public class HTTPBasicAuthorizeAttribute implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)  
             throws IOException, ServletException {  
         // TODO Auto-generated method stub          
-        boolean resultStatusCode = checkHTTPBasicAuthorize(request);  
-        if (resultStatusCode != true)  
+        ResultStatusCode resultStatusCode = checkHTTPBasicAuthorize(request);  
+        if (resultStatusCode.getErrcode()!=0)  
         {  
             HttpServletResponse httpResponse = (HttpServletResponse) response;  
             httpResponse.setCharacterEncoding("UTF-8");    
             httpResponse.setContentType("application/json; charset=utf-8");   
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  
-            httpResponse.getWriter().write("Incorrect username or password!");
+            ObjectMapper mapper = new ObjectMapper();
+            ResultMsg resultMsg = new ResultMsg(resultStatusCode.getErrcode(),resultStatusCode.getErrmsg(),null);
+            httpResponse.getWriter().write(mapper.writeValueAsString(resultMsg));
             return;  
         }  
         else  
@@ -50,7 +56,7 @@ public class HTTPBasicAuthorizeAttribute implements Filter{
           
     }  
       
-    private boolean checkHTTPBasicAuthorize(ServletRequest request)  
+    private ResultStatusCode checkHTTPBasicAuthorize(ServletRequest request)  
     {  
         try  
         {  
@@ -72,17 +78,17 @@ public class HTTPBasicAuthorizeAttribute implements Filter{
                             if (UserArray[0].compareTo(Name) == 0  
                                     && UserArray[1].compareTo(Password) == 0)  
                             {  
-                                return true;  
+                                return ResultStatusCode.OK;  
                             }  
                         }  
                     }  
                 }  
             }  
-            return false;  
+            return ResultStatusCode.PERMISSION_DENIED;  
         }  
         catch(Exception ex)  
         {  
-            return false;  
+            return ResultStatusCode.PERMISSION_DENIED;  
         }  
           
     }  

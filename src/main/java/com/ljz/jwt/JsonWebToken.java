@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
   
 import com.ljz.pojo.User;  
 import com.ljz.repository.UserRepository;
-import com.ljz.util.MyUtils;  
+import com.ljz.util.MyUtils;
+import com.ljz.util.ResultMsg;
+import com.ljz.util.ResultStatusCode;  
   
   
 @RestController  
@@ -23,23 +25,38 @@ public class JsonWebToken {
     @RequestMapping("oauth/token")  
     public Object getAccessToken(@RequestBody LoginPara loginPara)  
     {   
+    	ResultMsg resultMsg;
         try  
         {  
-            if(loginPara.getClientId() == null   
+            if((loginPara.getClientId() == null  ) 
                     || (loginPara.getClientId().compareTo(audienceEntity.getClientId()) != 0))  
-            return null;
+            {
+            	resultMsg = new ResultMsg(ResultStatusCode.INVALID_CLIENTID.getErrcode(),
+            			ResultStatusCode.INVALID_CLIENTID.getErrmsg(),null);
+            	return resultMsg;
+            }
               
             //验证码校验在后面章节添加  
               
               
             //验证用户名密码  
-            User user = userRepositoy.findUserByName(loginPara.getUsername());  
-            if (user == null)  return null;
+            System.out.println(loginPara.getUsername());
+            User user = userRepositoy.findUserByName("test");  
+
+            if (user == null){
+            	resultMsg = new ResultMsg(ResultStatusCode.INVALID_PASSWORD.getErrcode(),  
+                        ResultStatusCode.INVALID_PASSWORD.getErrmsg(), null);
+            	return resultMsg;
+            }
             else  
             {  
                 String md5Password = MyUtils.getMD5(loginPara.getPassword()+user.getSalt());  
                   
-                if (md5Password.compareTo(user.getPassword()) != 0)  return null;
+                if (md5Password.compareTo(user.getPassword()) != 0){
+                    resultMsg = new ResultMsg(ResultStatusCode.INVALID_PASSWORD.getErrcode(),  
+                            ResultStatusCode.INVALID_PASSWORD.getErrmsg(), null);  
+                    return resultMsg;  
+                }
             }  
               
             //拼装accessToken  
@@ -52,12 +69,16 @@ public class JsonWebToken {
             accessTokenEntity.setAccess_token(accessToken);  
             accessTokenEntity.setExpires_in(audienceEntity.getExpiresSecond());  
             accessTokenEntity.setToken_type("bearer");  
+            resultMsg = new ResultMsg(ResultStatusCode.OK.getErrcode(),   
+                    ResultStatusCode.OK.getErrmsg(), accessTokenEntity); 
             return accessTokenEntity;  
               
         }  
         catch(Exception ex)  
         {  
-        	return null;
+            resultMsg = new ResultMsg(ResultStatusCode.SYSTEM_ERR.getErrcode(),   
+                    ResultStatusCode.SYSTEM_ERR.getErrmsg(), null);  
+            return resultMsg; 
         }  
     }  
 }  

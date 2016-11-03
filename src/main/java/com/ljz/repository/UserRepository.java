@@ -14,7 +14,9 @@ import com.ljz.pojo.User;
 public interface UserRepository extends CrudRepository<User,Long>{
 	public User findUserById(Long id);
 	
-	@Query("select u from User u where u.name=:username")
-	public User findUserByName(@Param("username") String name);
+	public User findUserByName(String name);
+	
+	//@Query("select u from User u where u.name=:username")
+	//public User findUserByName(@Param("username") String name);
 
 }

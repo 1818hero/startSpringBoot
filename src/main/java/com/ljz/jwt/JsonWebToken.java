@@ -2,7 +2,8 @@ package com.ljz.jwt;
 /*
  * 获取token的接口，通过传入用户认证信息进行认证获取
  */
-import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;  
 import org.springframework.web.bind.annotation.RequestMapping;  
 import org.springframework.web.bind.annotation.RestController;  
@@ -21,6 +22,9 @@ public class JsonWebToken {
       
     @Autowired  
     private Audience audienceEntity;  
+    
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
       
     @RequestMapping("oauth/token")  
     public Object getAccessToken(@RequestBody LoginPara loginPara)  
@@ -37,11 +41,21 @@ public class JsonWebToken {
             }
               
             //验证码校验在后面章节添加  
-              
+            String captchaCode = loginPara.getCaptchaCode();
+            try{
+            	if(captchaCode == null)		throw new Exception();
+            	String captchaValue = redisTemplate.opsForValue().get(captchaCode);
+            	if(captchaValue == null)	throw new Exception();
+            	redisTemplate.delete(captchaCode);	//这是啥意思？
+            	if(captchaValue.compareTo(loginPara.getCaptchaValue())!=0) throw new Exception();
+            }catch(Exception e){
+            	resultMsg = new ResultMsg(ResultStatusCode.INVALID_CAPTCHA.getErrcode(),   
+                        ResultStatusCode.INVALID_CAPTCHA.getErrmsg(), null);  
+                return resultMsg;
+            }
               
             //验证用户名密码  
-            System.out.println(loginPara.getUsername());
-            User user = userRepositoy.findUserByName("test");  
+            User user = userRepositoy.findUserByName(loginPara.getUsername());  
 
             if (user == null){
             	resultMsg = new ResultMsg(ResultStatusCode.INVALID_PASSWORD.getErrcode(),  

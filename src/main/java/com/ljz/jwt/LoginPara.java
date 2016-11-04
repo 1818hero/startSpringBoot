@@ -4,8 +4,8 @@ public class LoginPara {
 	private String clientId;	//在Audience中的属性
 	private String userName;	//数据库的username
 	private String password;	//数据库中的password
-	private String captchaCode;
-	private String captchaValue;
+	private String captchaCode;	//验证码的UUID？
+	private String captchaValue;//验证码答案？
 	public String getClientId() {
 		return clientId;
 	}
